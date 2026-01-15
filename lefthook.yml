@@ -1,0 +1,19 @@
+# Lefthook configuration for telescope-blink-snippets.nvim
+# https://github.com/evilmartians/lefthook
+
+pre-commit:
+  parallel: true
+  commands:
+    lint:
+      glob: "*.lua"
+      run: |
+        if command -v luacheck &> /dev/null; then
+          luacheck {staged_files}
+        else
+          echo "Warning: luacheck not installed, skipping lint"
+        fi
+
+pre-push:
+  commands:
+    test:
+      run: make test

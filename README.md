@@ -138,12 +138,47 @@ MIT License - see [LICENSE](LICENSE)
 
 ## Contributing
 
-Contributions welcome! Please read the contributing guidelines and ensure tests pass before submitting PRs.
+Contributions welcome! Please ensure tests and linting pass before submitting PRs.
+
+### Setup
+
+```bash
+# Clone and enter the repo
+git clone https://github.com/CayLub/telescope-blink-snippets.nvim.git
+cd telescope-blink-snippets.nvim
+
+# Install pre-commit hooks (requires lefthook)
+lefthook install
+```
+
+### Install Development Tools
+
+```bash
+# lefthook (pre-commit hooks)
+curl -sL "https://github.com/evilmartians/lefthook/releases/latest/download/lefthook_$(uname -s)_x86_64" -o ~/.local/bin/lefthook
+chmod +x ~/.local/bin/lefthook
+
+# act (run GitHub Actions locally) - optional but recommended
+curl -sfL https://raw.githubusercontent.com/nektos/act/master/install.sh | bash -s -- -b ~/.local/bin
+
+# luacheck (Lua linter)
+luarocks install luacheck --local
+```
+
+### Pre-push Checks
+
+Tests run automatically before push via lefthook.
+
+To run manually:
 
 ```bash
 # Run tests
 make test
 
-# Or manually
-nvim --headless -u tests/minimal_init.lua -c "PlenaryBustedDirectory tests/ {minimal_init = 'tests/minimal_init.lua'}"
+# Run linter (if luacheck installed)
+make lint
+
+# Run full CI locally (if act installed)
+act -j lint --container-architecture linux/amd64
+act -j test --container-architecture linux/amd64
 ```
