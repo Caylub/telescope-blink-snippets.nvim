@@ -47,7 +47,6 @@ function M.highlight_placeholders(bufnr, lines)
   vim.api.nvim_buf_clear_namespace(bufnr, ns, 0, -1)
 
   for i, line in ipairs(lines) do
-    local col = 0
     -- Match ${N:text} pattern
     for match_start, match_end in line:gmatch("()%${%d+:[^}]*}()") do
       vim.api.nvim_buf_add_highlight(

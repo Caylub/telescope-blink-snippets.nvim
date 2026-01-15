@@ -140,10 +140,6 @@ describe("variables", function()
     end)
 
     it("applies /snakecase modifier", function()
-      -- Test with a known value
-      local vars = variables.get_variables()
-      -- We can't easily test TM_FILENAME_BASE since it depends on buffer
-      -- but we can verify the modifier works by checking the pattern
       local body = "${TM_FILENAME_BASE:/snakecase}"
       local result = variables.expand(body)
 
