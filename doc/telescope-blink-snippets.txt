@@ -1,0 +1,139 @@
+*telescope-blink-snippets.txt*  Browse and insert snippets via Telescope
+
+==============================================================================
+CONTENTS                                    *telescope-blink-snippets-contents*
+
+    1. Introduction ................ |telescope-blink-snippets-introduction|
+    2. Requirements ................ |telescope-blink-snippets-requirements|
+    3. Setup ....................... |telescope-blink-snippets-setup|
+    4. Commands .................... |telescope-blink-snippets-commands|
+    5. Configuration ............... |telescope-blink-snippets-configuration|
+    6. Lua API ..................... |telescope-blink-snippets-api|
+    7. Mappings .................... |telescope-blink-snippets-mappings|
+
+==============================================================================
+1. INTRODUCTION                          *telescope-blink-snippets-introduction*
+
+telescope-blink-snippets.nvim is a Telescope extension for browsing and
+inserting VSCode-style snippets using Neovim's native |vim.snippet| API.
+
+It works with any VSCode-style snippet collection, including friendly-snippets,
+and integrates seamlessly with blink.cmp or any completion plugin that uses
+native snippets.
+
+==============================================================================
+2. REQUIREMENTS                          *telescope-blink-snippets-requirements*
+
+- Neovim >= 0.10.0 (for |vim.snippet| API)
+- telescope.nvim (https://github.com/nvim-telescope/telescope.nvim)
+- plenary.nvim (https://github.com/nvim-lua/plenary.nvim)
+- Optional: friendly-snippets for pre-built snippet collections
+
+==============================================================================
+3. SETUP                                        *telescope-blink-snippets-setup*
+
+Load the extension after telescope setup: >lua
+
+    require('telescope').load_extension('blink_snippets')
+<
+
+Or with lazy.nvim: >lua
+
+    {
+      'CayLub/telescope-blink-snippets.nvim',
+      dependencies = {
+        'nvim-telescope/telescope.nvim',
+        'rafamadriz/friendly-snippets',
+      },
+      config = function()
+        require('telescope').load_extension('blink_snippets')
+      end,
+      keys = {
+        { '<leader>ss', '<cmd>Telescope blink_snippets<cr>' },
+      },
+    }
+<
+
+==============================================================================
+4. COMMANDS                                  *telescope-blink-snippets-commands*
+
+                                                        *:Telescope_blink_snippets*
+:Telescope blink_snippets
+    Open the snippet picker for the current filetype.
+
+:Telescope blink_snippets all_filetypes=true
+    Open the snippet picker showing all available snippets.
+
+==============================================================================
+5. CONFIGURATION                        *telescope-blink-snippets-configuration*
+
+Configure via telescope's setup: >lua
+
+    require('telescope').setup({
+      extensions = {
+        blink_snippets = {
+          -- Additional paths to search for snippets
+          search_paths = {
+            vim.fn.stdpath('config') .. '/snippets',
+          },
+
+          -- Show all filetypes by default
+          all_filetypes = false,
+
+          -- Filetype aliases for snippet matching
+          filetype_aliases = {
+            javascriptreact = { 'javascript' },
+            typescriptreact = { 'typescript', 'javascript' },
+          },
+        },
+      },
+    })
+<
+
+                                      *telescope-blink-snippets.search_paths*
+search_paths ~
+    List of additional directories to search for VSCode-style snippets.
+    Default: {}
+
+                                      *telescope-blink-snippets.all_filetypes*
+all_filetypes ~
+    When true, show snippets for all filetypes instead of just the current
+    buffer's filetype.
+    Default: false
+
+                                      *telescope-blink-snippets.filetype_aliases*
+filetype_aliases ~
+    Table mapping filetypes to lists of additional filetypes to include.
+    Useful for filetypes like javascriptreact that should include javascript
+    snippets.
+    Default: {}
+
+==============================================================================
+6. LUA API                                        *telescope-blink-snippets-api*
+
+                                              *telescope-blink-snippets.picker*
+blink_snippets({opts})
+    Open the snippet picker.
+
+    Parameters: ~
+        {opts}  Optional table with:
+                - all_filetypes (boolean): Show all filetypes
+                - search_paths (table): Additional search paths
+
+    Usage: >lua
+        require('telescope').extensions.blink_snippets.blink_snippets({
+          all_filetypes = true,
+        })
+<
+
+==============================================================================
+7. MAPPINGS                                  *telescope-blink-snippets-mappings*
+
+Default mappings in the picker:
+
+    <CR>      Insert snippet at cursor position
+    <C-y>     Yank snippet body to clipboard
+    <C-a>     Toggle between current filetype and all filetypes
+
+==============================================================================
+vim:tw=78:ts=8:ft=help:norl:

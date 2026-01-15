@@ -1,0 +1,21 @@
+{
+  "For Loop": {
+    "prefix": ["for", "fori"],
+    "body": ["for ${1:i} = ${2:1}, ${3:10} do", "\t$0", "end"],
+    "description": "Numeric for loop"
+  },
+  "Function": {
+    "prefix": "fn",
+    "body": [
+      "function ${1:name}(${2:args})",
+      "\t$0",
+      "end"
+    ],
+    "description": "Function definition"
+  },
+  "Local Variable": {
+    "prefix": "lv",
+    "body": "local ${1:name} = ${2:value}",
+    "description": "Local variable declaration"
+  }
+}

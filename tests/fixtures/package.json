@@ -1,0 +1,10 @@
+{
+  "name": "test-snippets",
+  "contributes": {
+    "snippets": [
+      { "language": "lua", "path": "./snippets/lua.json" },
+      { "language": "python", "path": "./snippets/python.json" },
+      { "language": ["javascript", "typescript"], "path": "./snippets/js-ts.json" }
+    ]
+  }
+}

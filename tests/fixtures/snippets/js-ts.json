@@ -1,0 +1,12 @@
+{
+  "Console Log": {
+    "prefix": "cl",
+    "body": "console.log(${1:message})",
+    "description": "Log to console"
+  },
+  "Arrow Function": {
+    "prefix": ["af", "arrow"],
+    "body": "const ${1:name} = (${2:args}) => {\n\t$0\n}",
+    "description": "Arrow function"
+  }
+}
