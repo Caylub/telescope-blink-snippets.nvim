@@ -119,6 +119,50 @@ local function get_comment_vars()
   }
 end
 
+--- Apply case modifier to a string
+---@param str string The input string
+---@param modifier string The modifier (upcase, downcase, capitalize, camelcase, pascalcase, snakecase, kebabcase)
+---@return string The transformed string
+local function apply_case_modifier(str, modifier)
+  if modifier == "upcase" then
+    return str:upper()
+  elseif modifier == "downcase" then
+    return str:lower()
+  elseif modifier == "capitalize" then
+    return str:sub(1, 1):upper() .. str:sub(2)
+  elseif modifier == "camelcase" then
+    -- Split on non-alphanumeric, capitalize each word except first, join
+    local parts = {}
+    for word in str:gmatch("[%w]+") do
+      table.insert(parts, word:lower())
+    end
+    if #parts == 0 then
+      return str
+    end
+    local result = parts[1]
+    for i = 2, #parts do
+      result = result .. parts[i]:sub(1, 1):upper() .. parts[i]:sub(2)
+    end
+    return result
+  elseif modifier == "pascalcase" then
+    local parts = {}
+    for word in str:gmatch("[%w]+") do
+      table.insert(parts, word:sub(1, 1):upper() .. word:sub(2):lower())
+    end
+    return table.concat(parts, "")
+  elseif modifier == "snakecase" then
+    -- Insert underscore before uppercase letters, then lowercase all
+    local result = str:gsub("([a-z])([A-Z])", "%1_%2")
+    result = result:gsub("[%s%-]+", "_")
+    return result:lower()
+  elseif modifier == "kebabcase" then
+    local result = str:gsub("([a-z])([A-Z])", "%1-%2")
+    result = result:gsub("[%s_]+", "-")
+    return result:lower()
+  end
+  return str
+end
+
 --- Build complete variable table
 ---@return table<string, string>
 function M.get_variables()
@@ -146,16 +190,22 @@ end
 function M.expand(body)
   local vars = M.get_variables()
 
-  -- Expand ${VAR} and ${VAR:default} syntax (only uppercase letter variables, not tabstops)
-  local result = body:gsub("%${([A-Z_][A-Z_0-9]*)}", function(var_name)
+  -- Expand ${VAR:/modifier} syntax (case modifiers on variables)
+  local result = body:gsub("%${([A-Z_][A-Z_0-9]*):/(.-)}",function(var_name, modifier)
+    local value = vars[var_name] or ""
+    return apply_case_modifier(value, modifier)
+  end)
+
+  -- Expand ${VAR} syntax (only uppercase letter variables, not tabstops)
+  result = result:gsub("%${([A-Z_][A-Z_0-9]*)}", function(var_name)
     if vars[var_name] then
       return vars[var_name]
     end
     return ""
   end)
 
-  -- Expand ${VAR:default} syntax with defaults
-  result = result:gsub("%${([A-Z_][A-Z_0-9]*):([^}]*)}", function(var_name, default)
+  -- Expand ${VAR:default} syntax with defaults (but not case modifiers which start with /)
+  result = result:gsub("%${([A-Z_][A-Z_0-9]*):([^/}][^}]*)}", function(var_name, default)
     if vars[var_name] then
       return vars[var_name]
     end

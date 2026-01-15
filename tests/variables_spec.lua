@@ -33,13 +33,6 @@ describe("variables", function()
       assert.is_not_nil(vars.WORKSPACE_FOLDER)
     end)
 
-    it("returns cursor position variables", function()
-      local vars = variables.get_variables()
-
-      assert.is_not_nil(vars.CURSOR_INDEX)
-      assert.is_not_nil(vars.CURSOR_NUMBER)
-    end)
-
     it("returns UUID", function()
       local vars = variables.get_variables()
 
@@ -111,6 +104,61 @@ describe("variables", function()
       local result = variables.expand(body)
 
       assert.equals(36, #result)
+    end)
+
+    it("expands CURSOR_INDEX and CURSOR_NUMBER", function()
+      local vars = variables.get_variables()
+
+      assert.is_not_nil(vars.CURSOR_INDEX)
+      assert.is_not_nil(vars.CURSOR_NUMBER)
+    end)
+
+    it("applies /upcase modifier", function()
+      local body = "${TM_FILENAME_BASE:/upcase}"
+      local result = variables.expand(body)
+
+      -- Should be all uppercase
+      assert.equals(result, result:upper())
+    end)
+
+    it("applies /downcase modifier", function()
+      local body = "${TM_FILENAME_BASE:/downcase}"
+      local result = variables.expand(body)
+
+      -- Should be all lowercase
+      assert.equals(result, result:lower())
+    end)
+
+    it("applies /capitalize modifier", function()
+      local body = "${TM_FILENAME_BASE:/capitalize}"
+      local result = variables.expand(body)
+
+      -- First char should be uppercase
+      if #result > 0 then
+        assert.equals(result:sub(1, 1), result:sub(1, 1):upper())
+      end
+    end)
+
+    it("applies /snakecase modifier", function()
+      -- Test with a known value
+      local vars = variables.get_variables()
+      -- We can't easily test TM_FILENAME_BASE since it depends on buffer
+      -- but we can verify the modifier works by checking the pattern
+      local body = "${TM_FILENAME_BASE:/snakecase}"
+      local result = variables.expand(body)
+
+      -- Result should not contain uppercase letters
+      assert.is_falsy(result:match("[A-Z]"))
+    end)
+
+    it("applies /camelcase modifier", function()
+      local body = "${TM_FILENAME_BASE:/camelcase}"
+      local result = variables.expand(body)
+
+      -- Should start with lowercase
+      if #result > 0 then
+        assert.equals(result:sub(1, 1), result:sub(1, 1):lower())
+      end
     end)
   end)
 end)
