@@ -98,7 +98,39 @@ require('telescope').setup({
 1. **Snippet Discovery**: Scans `package.json` files in snippet directories to find VSCode-style snippet collections
 2. **Lazy Loading**: Snippets are parsed on first use and cached
 3. **Filetype Matching**: Uses the `contributes.snippets` field from `package.json` to match filetypes
-4. **Native Expansion**: Inserts snippets using `vim.snippet.expand()` for full placeholder support
+4. **Variable Expansion**: Expands VSCode variables before passing to `vim.snippet.expand()`
+5. **Native Expansion**: Inserts snippets using `vim.snippet.expand()` for full placeholder support
+
+## VSCode Variable Support
+
+The following VSCode snippet variables are expanded:
+
+| Category | Variables |
+|----------|-----------|
+| Date/Time | `$CURRENT_YEAR`, `$CURRENT_MONTH`, `$CURRENT_DATE`, `$CURRENT_HOUR`, `$CURRENT_MINUTE`, `$CURRENT_SECOND`, etc. |
+| File | `$TM_FILENAME`, `$TM_FILENAME_BASE`, `$TM_FILEPATH`, `$TM_DIRECTORY`, `$RELATIVE_FILEPATH` |
+| Editor | `$TM_LINE_NUMBER`, `$TM_LINE_INDEX`, `$TM_CURRENT_LINE`, `$TM_CURRENT_WORD`, `$CURSOR_INDEX`, `$CURSOR_NUMBER` |
+| Workspace | `$WORKSPACE_FOLDER`, `$WORKSPACE_NAME` |
+| Other | `$CLIPBOARD`, `$UUID`, `$RANDOM`, `$RANDOM_HEX` |
+| Comments | `$LINE_COMMENT`, `$BLOCK_COMMENT_START`, `$BLOCK_COMMENT_END` |
+
+### Case Modifiers
+
+Variables support case modifiers with `${VAR:/modifier}` syntax:
+
+- `/upcase` - HELLO WORLD
+- `/downcase` - hello world
+- `/capitalize` - Hello world
+- `/camelcase` - helloWorld
+- `/pascalcase` - HelloWorld
+- `/snakecase` - hello_world
+- `/kebabcase` - hello-world
+
+Example: `${TM_FILENAME_BASE:/pascalcase}`
+
+### TODO
+
+- [ ] Regex-based variable transformations (e.g., `${TM_FILENAME/(.*)\\..+$/$1/}`)
 
 ## License
 
