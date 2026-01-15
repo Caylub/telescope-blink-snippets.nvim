@@ -10,6 +10,7 @@ local previewers = require("telescope.previewers")
 
 local loader = require("telescope._extensions.blink_snippets.loader")
 local config = require("telescope._extensions.blink_snippets.config")
+local variables = require("telescope._extensions.blink_snippets.variables")
 
 local M = {}
 
@@ -63,7 +64,9 @@ end
 --- Insert a snippet at the current cursor position
 ---@param snippet Snippet
 function M.insert_snippet(snippet)
-  vim.snippet.expand(snippet.body)
+  -- Expand VSCode variables before passing to vim.snippet
+  local body = variables.expand(snippet.body)
+  vim.snippet.expand(body)
 end
 
 --- Create the snippet previewer
