@@ -33,6 +33,7 @@ local function get_file_vars()
   local directory = vim.fn.expand("%:p:h")
   local relative_filepath = vim.fn.expand("%")
   local workspace = vim.fn.getcwd()
+  local col = vim.fn.col(".")
 
   return {
     TM_FILENAME = filename ~= "" and filename or "Untitled",
@@ -44,6 +45,8 @@ local function get_file_vars()
     TM_CURRENT_LINE = vim.fn.getline("."),
     TM_CURRENT_WORD = vim.fn.expand("<cword>"),
     TM_SELECTED_TEXT = "",
+    CURSOR_INDEX = tostring(col - 1),
+    CURSOR_NUMBER = tostring(col),
     RELATIVE_FILEPATH = relative_filepath ~= "" and relative_filepath or "",
     WORKSPACE_FOLDER = workspace,
     WORKSPACE_NAME = vim.fn.fnamemodify(workspace, ":t"),

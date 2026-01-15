@@ -33,6 +33,13 @@ describe("variables", function()
       assert.is_not_nil(vars.WORKSPACE_FOLDER)
     end)
 
+    it("returns cursor position variables", function()
+      local vars = variables.get_variables()
+
+      assert.is_not_nil(vars.CURSOR_INDEX)
+      assert.is_not_nil(vars.CURSOR_NUMBER)
+    end)
+
     it("returns UUID", function()
       local vars = variables.get_variables()
 
